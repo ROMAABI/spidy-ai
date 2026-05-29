@@ -1,0 +1,37 @@
+# Secrets
+.env
+
+# Sisyphus work files
+.sisyphus/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+venv/
+.venv/
+
+# Build artifacts
+dist/
+build/
+*.tar.gz
+*.egg
+
+# Memory / databases
+memory/
+spidy.db
+chroma/
+
+# Config overrides
+config.local.yaml
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

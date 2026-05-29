@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "spidy-ai"
+version = "0.2.0"
+description = "Deeply system-aware personal AI assistant for Arch Linux"
+requires-python = ">=3.12"
+dependencies = [
+    "pyyaml",
+    "ollama",
+    "chromadb",
+]
+
+[tool.setuptools.packages.find]
+include = ["spidy*", "core*", "skills*"]

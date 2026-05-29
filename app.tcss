@@ -1,0 +1,290 @@
+/*
+ * Spidy AI — OpenCode-inspired dense terminal stylesheet
+ *
+ * Uses Textual's built-in theme variables ($primary, $accent, $surface,
+ * $panel, $foreground, $background, $success, $error, $warning) plus
+ * custom CSS properties (var(--spidy-*)) for extra tokens.
+ */
+
+Screen {
+    background: $background;
+    color: $foreground;
+    layers: base dialogs notifications;
+}
+
+/* ── Splash Screen ─────────────────────────────────────────── */
+
+#splash-logo {
+    width: 100%;
+    content-align: center middle;
+    text-style: bold;
+    color: $accent;
+    height: 1fr;
+}
+
+#splash-title {
+    width: 100%;
+    content-align: center middle;
+    text-style: bold;
+    color: $foreground;
+    height: 1;
+}
+
+#splash-text {
+    width: 100%;
+    content-align: center middle;
+    color: var(--spidy-text-dim);
+    height: 1;
+    margin-bottom: 2;
+}
+
+/* ── Header (single line, minimal) ────────────────────────── */
+
+SpidyHeader {
+    dock: top;
+    height: 1;
+    background: $surface;
+    color: $foreground;
+    layout: horizontal;
+    padding: 0 1;
+}
+
+.header-left {
+    width: auto;
+    content-align: left middle;
+    text-style: bold;
+    color: $accent;
+}
+
+.header-center {
+    width: 1fr;
+    content-align: center middle;
+    color: var(--spidy-text-dim);
+}
+
+.header-right {
+    width: auto;
+    content-align: right middle;
+    color: var(--spidy-text-dim);
+}
+
+/* ── Footer (single line, minimal) ────────────────────────── */
+
+SpidyFooter {
+    dock: bottom;
+    height: 1;
+    background: $surface;
+    color: var(--spidy-text-dim);
+    layout: horizontal;
+    padding: 0 1;
+}
+
+.footer-left { width: 1fr; content-align: left middle; }
+.footer-right { width: auto; content-align: right middle; }
+
+/* ── Sidebar ───────────────────────────────────────────────── */
+
+SpidySidebar {
+    dock: right;
+    width: 28;
+    height: 100%;
+    background: $surface;
+    border-left: solid $background;
+    padding: 0 1;
+}
+
+SpidySidebar.hidden {
+    display: none;
+}
+
+.sidebar-section {
+    margin-bottom: 0;
+}
+
+.sidebar-title {
+    text-style: bold;
+    color: $accent;
+    margin-top: 1;
+    margin-bottom: 0;
+}
+
+.sidebar-header-row {
+    layout: horizontal;
+    height: auto;
+}
+
+.sidebar-close-btn {
+    width: auto;
+    color: var(--spidy-text-dim);
+    text-style: bold;
+    margin-left: 1;
+}
+
+.sidebar-widget {
+    margin-bottom: 0;
+}
+
+.widget-header {
+    text-style: bold;
+    color: $accent;
+    margin-top: 1;
+    margin-bottom: 0;
+}
+
+.widget-item-stat {
+    color: var(--spidy-text-dim);
+    margin: 0 0;
+    padding: 0;
+    height: 1;
+}
+
+/* ── Prompt bar (OpenCode-style: no border, compact) ──────── */
+
+SpidyPrompt {
+    dock: bottom;
+    height: auto;
+    min-height: 1;
+    max-height: 4;
+    margin: 0 0 0 0;
+    border: none;
+    background: $surface;
+}
+
+#prompt-row {
+    height: auto;
+    layout: horizontal;
+}
+
+#prompt-chevron {
+    width: 2;
+    content-align: right middle;
+    color: $accent;
+    text-style: bold;
+}
+
+.spidy-input {
+    width: 1fr;
+    height: 1;
+    border: none;
+    background: transparent;
+    color: $foreground;
+    padding: 0;
+    margin: 0;
+}
+
+.spidy-input:focus {
+    border: none;
+}
+
+/* ── Chat area ─────────────────────────────────────────────── */
+
+ChatView {
+    height: 1fr;
+    width: 1fr;
+    padding: 0;
+    overflow-y: scroll;
+    scrollbar-gutter: stable;
+}
+
+#main-area {
+    height: 1fr;
+    padding: 0;
+    margin: 0;
+}
+
+ChatMessage {
+    margin: 0;
+    layout: vertical;
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+    border-left: solid $primary;
+    background: transparent;
+}
+
+ChatMessage.user {
+    border-left: solid $accent;
+}
+
+ChatMessage.assistant {
+    border-left: solid $primary;
+}
+
+/* ── Child containers: override DEFAULT_CSS height: 1fr ──── */
+
+.user-bubble-container {
+    height: auto;
+}
+
+.assistant-msg-row {
+    height: auto;
+}
+
+.assistant-bubble-container {
+    height: auto;
+}
+
+#steps-container {
+    height: auto;
+}
+
+/* ── Message content (OpenCode-style: dense, no bubbles) ──── */
+
+.message-content {
+    background: transparent;
+    padding: 0;
+    margin: 0;
+}
+
+/* ── Thinking / skill blocks ───────────────────────────────── */
+
+.skill-block {
+    margin: 0 0;
+    padding: 0 0;
+    border: none;
+    color: $warning;
+    text-style: italic;
+}
+
+.thinking-block {
+    display: none;
+    margin: 0 0;
+    padding: 0 0;
+    border: none;
+    color: var(--spidy-text-dim);
+    text-style: italic;
+}
+
+/* ── Dialogs ───────────────────────────────────────────────── */
+
+SpidyCommandDialog {
+    layer: dialogs;
+    align: center middle;
+    width: 50;
+    height: auto;
+    max-height: 15;
+    background: $panel;
+    border: solid $accent;
+    padding: 0 1;
+}
+
+SpidyCommandDialog Input {
+    border: none;
+    background: $surface;
+}
+
+ToastContainer {
+    layer: notifications;
+    dock: bottom;
+    height: auto;
+    align: right bottom;
+    margin: 0 1;
+}
+
+Toast {
+    background: $primary;
+    color: $foreground;
+    padding: 0 1;
+    margin-top: 0;
+    text-style: bold;
+}

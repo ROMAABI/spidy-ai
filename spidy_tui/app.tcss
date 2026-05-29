@@ -1,0 +1,450 @@
+/*
+ * Spidy AI — Cyberpunk Dashboard Stylesheet
+ */
+
+$bg-color: #08090d;
+$surface-color: #10121a;
+$panel-color: #12141f;
+$border-color: #1a1c24;
+$accent-color: #00f0ff;
+$red-color: #ef4444;
+$text-color: #e2e8f0;
+$text-dim: #64748b;
+$green-color: #10b981;
+
+Screen {
+    background: $bg-color;
+    color: $text-color;
+    layers: base dialogs notifications;
+}
+
+ScrollableContainer {
+    scrollbar-size: 1 1;
+    scrollbar-color-hover: $accent-color;
+    scrollbar-color-active: $accent-color;
+}
+
+/* ── Header ────────────────────────────────────────────────── */
+
+SpidyHeader {
+    dock: top;
+    height: 3;
+    background: $bg-color;
+    border-bottom: solid $border-color;
+    padding: 0 2;
+}
+
+SpidyHeader Horizontal {
+    height: 100%;
+}
+
+.header-left {
+    width: auto;
+    content-align: left middle;
+    text-style: bold;
+    color: $red-color;
+}
+
+.header-center {
+    width: 1fr;
+    content-align: center middle;
+    color: $text-color;
+}
+
+.header-right {
+    width: auto;
+    content-align: right middle;
+    color: $text-dim;
+}
+
+/* ── Footer ────────────────────────────────────────────────── */
+
+SpidyFooter {
+    dock: bottom;
+    height: 3;
+    background: $bg-color;
+    border-top: solid $border-color;
+    padding: 0 2;
+}
+
+SpidyFooter Horizontal {
+    height: 100%;
+}
+
+.footer-left {
+    width: 1fr;
+    content-align: left middle;
+    color: $text-color;
+}
+
+.footer-right {
+    width: auto;
+    content-align: right middle;
+    color: $text-dim;
+}
+
+/* ── Chat View ────────────────────────────────────────────── */
+
+ChatView {
+    height: 1fr;
+    width: 1fr;
+    padding: 1 2;
+    overflow-y: scroll;
+    scrollbar-gutter: stable;
+}
+
+#main-area {
+    height: 1fr;
+    layout: vertical;
+}
+
+.system-init-log {
+    color: $red-color;
+    margin-bottom: 2;
+    content-align: left middle;
+}
+
+/* ── User Messages (Right-aligned, cyan left border) ──────── */
+
+ChatMessage.user {
+    height: auto;
+    width: 100%;
+    align-horizontal: right;
+    margin-bottom: 2;
+}
+
+.user-bubble-container {
+    width: auto;
+    max-width: 80%;
+    background: $surface-color;
+    border: solid $border-color;
+    border-left: solid $accent-color;
+    padding: 1 2;
+}
+
+.user-header {
+    color: $accent-color;
+    text-style: bold;
+    margin-bottom: 1;
+}
+
+ChatMessage.user .message-content {
+    color: $text-color;
+    height: auto;
+}
+
+/* ── Spidy Messages (Left-aligned, red left border, avatar) ── */
+
+ChatMessage.assistant {
+    height: auto;
+    width: 100%;
+    align-horizontal: left;
+    margin-bottom: 2;
+}
+
+.assistant-msg-row {
+    height: auto;
+    width: 100%;
+    layout: horizontal;
+}
+
+.assistant-avatar {
+    width: 5;
+    height: 3;
+    content-align: center middle;
+    background: $surface-color;
+    color: $red-color;
+    border: solid $border-color;
+    margin-right: 1;
+}
+
+.assistant-bubble-container {
+    width: 1fr;
+    height: auto;
+    border-left: solid $red-color;
+    padding-left: 2;
+}
+
+/* ── Child containers: override DEFAULT_CSS height: 1fr ──── */
+
+.user-bubble-container {
+    height: auto;
+}
+
+.assistant-msg-row {
+    height: auto;
+}
+
+#steps-container {
+    height: auto;
+}
+
+.assistant-header {
+    color: $red-color;
+    text-style: bold;
+    margin-bottom: 1;
+}
+
+ChatMessage.assistant .message-content {
+    color: $text-color;
+    height: auto;
+}
+
+.thinking-block {
+    color: $text-dim;
+    text-style: italic;
+    margin-bottom: 1;
+    display: none;
+    height: auto;
+}
+
+/* ── Checklist / Steps container ───────────────────────────── */
+
+#steps-container {
+    height: auto;
+    display: none;
+    layout: vertical;
+    background: $panel-color;
+    border: solid $border-color;
+    padding: 1 2;
+    margin-bottom: 1;
+    max-width: 60;
+}
+
+.step-row {
+    height: 1;
+    layout: horizontal;
+}
+
+.step-title {
+    width: 1fr;
+}
+
+.step-status {
+    width: auto;
+    text-style: bold;
+}
+
+.step-done {
+    color: $green-color;
+}
+
+.step-progress {
+    color: $accent-color;
+}
+
+.step-pending {
+    color: $text-dim;
+}
+
+.assistant-footer {
+    color: $text-dim;
+    margin-top: 1;
+    height: auto;
+}
+
+/* ── Prompt Bar ────────────────────────────────────────────── */
+
+SpidyPrompt {
+    height: 3;
+    background: $surface-color;
+    border: solid $border-color;
+    border-left: solid $red-color;
+    margin: 1 2 0 2;
+    padding: 0 2;
+}
+
+#prompt-row-container {
+    height: 100%;
+    align: left middle;
+}
+
+#prompt-chevron {
+    width: 2;
+    color: $red-color;
+    text-style: bold;
+}
+
+.spidy-input {
+    width: 1fr;
+    height: 1;
+    border: none;
+    background: transparent;
+    color: $text-color;
+    padding: 0;
+    margin: 0;
+}
+
+.spidy-input:focus {
+    border: none;
+}
+
+#prompt-tips-container {
+    width: auto;
+    align: right middle;
+}
+
+.prompt-tip {
+    color: $text-dim;
+}
+
+.prompt-tip-space {
+    width: 2;
+}
+
+#prompt-send-btn {
+    color: $red-color;
+    text-style: bold;
+    margin-left: 2;
+}
+
+/* ── Quick Commands Row ────────────────────────────────────── */
+
+QuickCommands {
+    height: 5;
+    margin: 1 1 1 1;
+    padding: 0 1;
+}
+
+#quick-commands-row {
+    height: 100%;
+    align: left middle;
+}
+
+.quick-command-item {
+    width: 1fr;
+    height: 4;
+    background: $surface-color;
+    border: solid $border-color;
+    margin: 0 1;
+    padding: 0 2;
+}
+
+.quick-command-item:hover {
+    border: solid $red-color;
+    background: $panel-color;
+}
+
+.qc-item-container {
+    height: 100%;
+    align: left middle;
+}
+
+.qc-cmd {
+    color: $red-color;
+    text-style: bold;
+}
+
+.qc-desc {
+    color: $text-dim;
+}
+
+/* ── Sidebar Context Widgets ───────────────────────────────── */
+
+SpidySidebar {
+    dock: right;
+    width: 38;
+    height: 100%;
+    background: $bg-color;
+    border-left: solid $border-color;
+    padding: 1 2;
+}
+
+SpidySidebar.hidden {
+    display: none;
+}
+
+#sidebar-container {
+    height: 100%;
+    layout: vertical;
+}
+
+.sidebar-header-row {
+    height: 3;
+}
+
+.sidebar-title {
+    width: 1fr;
+    color: $red-color;
+    text-style: bold;
+}
+
+.sidebar-close-btn {
+    width: auto;
+    color: $text-dim;
+    text-style: bold;
+}
+
+.sidebar-widget {
+    background: $surface-color;
+    border: solid $border-color;
+    margin-bottom: 2;
+    padding: 1 2;
+    height: auto;
+}
+
+.widget-header {
+    color: $text-dim;
+    text-style: bold;
+    margin-bottom: 1;
+}
+
+.widget-content {
+    color: $text-color;
+}
+
+.widget-sub {
+    color: $text-dim;
+}
+
+.widget-item {
+    color: $text-color;
+    margin-bottom: 0;
+}
+
+.widget-item-stat {
+    color: $text-color;
+}
+
+.widget-action-link {
+    color: $accent-color;
+    margin-top: 1;
+}
+
+.weather-main {
+    text-style: bold;
+    color: $text-color;
+}
+
+.add-widget-button {
+    width: 100%;
+    height: 3;
+    border: dashed $border-color;
+    background: transparent;
+    color: $text-dim;
+    content-align: center middle;
+}
+
+.add-widget-button:hover {
+    border: dashed $red-color;
+    color: $red-color;
+}
+
+/* ── Dialogs ───────────────────────────────────────────────── */
+
+SpidyCommandDialog {
+    layer: dialogs;
+    align: center middle;
+    width: 60;
+    height: auto;
+    max-height: 20;
+    background: $panel-color;
+    border: solid $accent-color;
+    padding: 1 2;
+}
+
+SpidyCommandDialog Input {
+    border: none;
+    background: $surface-color;
+    color: $text-color;
+}
