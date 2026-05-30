@@ -93,10 +93,10 @@ def _open_url(url: str) -> dict:
         time.sleep(0.3)
         if proc.poll() is not None and proc.returncode != 0:
             subprocess.Popen(["xdg-open", url], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        return {"success": True, "output": url, "command": f"{browser} {url}"}
+        return {"success": True, "output": url, "command": f"{browser} {url}", "action": "open"}
     except FileNotFoundError:
         subprocess.Popen(["xdg-open", url], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        return {"success": True, "output": url, "command": f"xdg-open {url}"}
+        return {"success": True, "output": url, "command": f"xdg-open {url}", "action": "open"}
 
 
 def _open_app(app: str) -> dict:
@@ -104,23 +104,23 @@ def _open_app(app: str) -> dict:
         app = APP_ALIASES[app]
     if os.path.isdir(app):
         subprocess.Popen(["dolphin", app], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        return {"success": True, "output": app, "command": f"dolphin {app}"}
+        return {"success": True, "output": app, "command": f"dolphin {app}", "action": "open"}
     executable = subprocess.run(["which", app], capture_output=True, text=True)
     if executable.returncode == 0:
         path = executable.stdout.strip()
         subprocess.Popen([path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        return {"success": True, "output": app, "command": path}
+        return {"success": True, "output": app, "command": path, "action": "open"}
     desktop_files = list(Path("/usr/share/applications").glob(f"*{app}*.desktop"))
     if not desktop_files:
         desktop_files = list(Path.home().joinpath(".local/share/applications").glob(f"*{app}*.desktop"))
     if desktop_files:
         subprocess.Popen(["gtk-launch", desktop_files[0].stem], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        return {"success": True, "output": app, "command": f"gtk-launch {desktop_files[0].stem}"}
+        return {"success": True, "output": app, "command": f"gtk-launch {desktop_files[0].stem}", "action": "open"}
     try:
         subprocess.Popen([app], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        return {"success": True, "output": app, "command": app}
+        return {"success": True, "output": app, "command": app, "action": "open"}
     except FileNotFoundError:
-        return {"success": False, "output": f"{app} not found", "command": app}
+        return {"success": False, "output": f"{app} not found", "command": app, "action": "open"}
 
 
 def _search_url(engine: str, query: str) -> dict:
@@ -218,7 +218,7 @@ def _parse_open_command(text: str) -> dict:
         if os.path.isdir(app):
             return _open_app(app)
         subprocess.Popen(["xdg-open", app], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        return {"success": True, "output": app, "command": f"xdg-open {app}"}
+        return {"success": True, "output": app, "command": f"xdg-open {app}", "action": "open"}
     if "." in app and "/" not in app:
         return _open_url(f"https://{app}")
     result = _open_app(app)
