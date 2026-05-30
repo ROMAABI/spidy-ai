@@ -1,0 +1,21 @@
+┌────────────────────────────────────────────────────────────────────┐
+│                    Spidy AI — Skills Execution                     │
+├────────────────────────────────────────────────────────────────────┤
+│                                                                    │
+│   YOU: set a reminder for 3pm                                      │
+│                                                                    │
+│   SPIDY: ✓ Reminder set for 3:00 PM today.                         │
+│                                                                    │
+│   YOU: find large files in Downloads                               │
+│                                                                    │
+│   SPIDY: Found 3 large files:                                      │
+│          • movie.mkv     (4.2 GB)                                  │
+│          • backup.tar.gz (1.8 GB)                                  │
+│          • dataset.zip   (950 MB)                                  │
+│                                                                    │
+│   YOU: add todo buy groceries                                      │
+│                                                                    │
+│   SPIDY: ✓ Added to todo list:                                     │
+│          [ ] Buy groceries                                         │
+│                                                                    │
+└────────────────────────────────────────────────────────────────────┘

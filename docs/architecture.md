@@ -1,0 +1,180 @@
+# Spidy AI Architecture
+
+## System Overview
+
+Spidy AI is a deeply system-aware personal AI assistant designed for Linux. It operates as a terminal-based application with three main interfaces: TUI (Textual), CLI, and voice.
+
+## Component Map
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        PRESENTATION                            │
+│  ┌────────────┐  ┌──────────────────┐  ┌────────────────────┐  │
+│  │  TUI App   │  │  CLI Interface   │  │  Voice Interface   │  │
+│  │ (Textual)  │  │  (interactive)   │  │  (wake word + STT) │  │
+│  └─────┬──────┘  └────────┬─────────┘  └─────────┬──────────┘  │
+└────────┼──────────────────┼───────────────────────┼─────────────┘
+         │                  │                       │
+┌────────▼──────────────────▼───────────────────────▼─────────────┐
+│                     ORCHESTRATION                               │
+│  ┌────────────────────────────────────────────────────────────┐ │
+│  │                   Backend Manager                          │ │
+│  │  ┌──────────┐  ┌──────────────┐  ┌─────────────────────┐  │ │
+│  │  │  Intent   │  │  Streaming   │  │  Permission System  │  │ │
+│  │  │  Router   │  │  LLM Engine  │  │  (risk-based)       │  │ │
+│  │  └─────┬────┘  └──────┬───────┘  └──────────┬──────────┘  │ │
+│  └────────┼───────────────┼─────────────────────┼─────────────┘ │
+└───────────┼───────────────┼─────────────────────┼───────────────┘
+            │               │                     │
+┌───────────▼───────────────▼─────────────────────▼───────────────┐
+│                       CORE ENGINE                               │
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌────────────────────┐ │
+│  │   TTS    │ │   STT    │ │  Memory  │ │  System Profile    │ │
+│  │ (gTTS+   │ │(Whisper) │ │(SQLite + │ │  (hardware, OS,    │ │
+│  │ streaming)│ │          │ │ ChromaDB)│ │   tools, services) │ │
+│  └──────────┘ └──────────┘ └──────────┘ └────────────────────┘ │
+└─────────────────────────────────────────────────────────────────┘
+            │               │                     │
+┌───────────▼───────────────▼─────────────────────▼───────────────┐
+│                        SKILLS LAYER                             │
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐          │
+│  │  System   │ │ Schedule │ │  Files   │ │  Coding  │          │
+│  │  (15)     │ │  (15)    │ │  (20)    │ │  (15)    │          │
+│  └──────────┘ └──────────┘ └──────────┘ └──────────┘          │
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐                       │
+│  │ Standalone│ │  Search  │ │  Media   │                       │
+│  │   (7)     │ │          │ │          │                       │
+│  └──────────┘ └──────────┘ └──────────┘                       │
+└─────────────────────────────────────────────────────────────────┘
+            │               │                     │
+┌───────────▼───────────────▼─────────────────────▼───────────────┐
+│                      SYSTEM LAYER                               │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────┐  │
+│  │  Ollama /    │  │  PulseAudio  │  │  Hyprland / XDG      │  │
+│  │  OpenRouter  │  │  (audio)     │  │  (desktop)           │  │
+│  └──────────────┘  └──────────────┘  └──────────────────────┘  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+## Data Flow
+
+### User Input Processing
+
+```
+User Input (text/voice)
+    │
+    ▼
+┌─────────────────────┐
+│  Voice Detection     │  (if voice mode enabled)
+│  Wake Word → STT     │
+└──────────┬──────────┘
+           │
+    ▼
+┌─────────────────────┐
+│  Intent Router       │  CLASSIFY: COMMAND / QUESTION / CHAT / SEARCH
+│  (pre-LLM)          │
+└──────────┬──────────┘
+           │
+    ├─── COMMAND ──→ Skill Execution → Response
+    │
+    ├─── SEARCH  ──→ Search Skill → Response
+    │
+    └─── QUESTION/CHAT ──→ LLM Streaming → Response
+                                    │
+                                    ▼
+                            ┌───────────────┐
+                            │  TTS Streaming │
+                            │  (background)  │
+                            └───────────────┘
+```
+
+### Intent Classification
+
+The intent router processes every user input BEFORE sending to the LLM:
+
+1. **QUESTION** — Starts with question words, ends with `?`
+2. **CHAT** — Greetings, casual conversation
+3. **SEARCH** — Starts with "search", "find"
+4. **COMMAND** — Starts with "open", "play", "set", etc.
+
+This prevents the LLM from handling direct commands, reducing latency and improving reliability.
+
+## Memory Architecture
+
+```
+┌─────────────────────────────────────────────┐
+│              Memory System                  │
+│  ┌─────────────────┐  ┌─────────────────┐  │
+│  │  Short-term      │  │  Long-term      │  │
+│  │  (SQLite)        │  │  (ChromaDB)     │  │
+│  │                  │  │                  │  │
+│  │  • Recent chats  │  │  • User prefs   │  │
+│  │  • Last N msgs   │  │  • Habits       │  │
+│  │  • Context       │  │  • Projects     │  │
+│  └─────────────────┘  └─────────────────┘  │
+│                                             │
+│  ┌─────────────────────────────────────────┐│
+│  │  RAG Pipeline                           ││
+│  │  • Ingest docs/configs/logs             ││
+│  │  • Vector embeddings                    ││
+│  │  • Semantic search                      ││
+│  │  • Context injection                    ││
+│  └─────────────────────────────────────────┘│
+└─────────────────────────────────────────────┘
+```
+
+## Permission System
+
+```
+User Command
+    │
+    ▼
+┌─────────────────┐
+│ Risk Classifier  │
+│                  │
+│ CRITICAL: rm -rf │──→ Safety Phrase Required
+│ HIGH: sys config │──→ Confirmation Prompt
+│ MEDIUM: files    │──→ Auto-execute
+│ LOW: read-only   │──→ No restrictions
+└────────┬────────┘
+         │
+    ▼
+┌─────────────────┐
+│ Audit Logger     │
+│ ~/.spidy/audit  │
+└─────────────────┘
+```
+
+## TTS Streaming Architecture
+
+```
+LLM Token Stream
+    │
+    ▼
+┌─────────────────────────┐
+│  Sentence Buffer         │
+│  Splits on: . ! ? \n    │
+│  Max: 300 chars          │
+│  Min: 15 chars           │
+└──────────┬──────────────┘
+           │
+    ▼
+┌─────────────────────────┐
+│  Text Cleaner            │
+│  • Remove emojis         │
+│  • Strip markdown        │
+│  • Replace symbols       │
+│  • Collapse punctution   │
+└──────────┬──────────────┘
+           │
+    ▼
+┌─────────────────────────┐
+│  Thread-safe Queue       │
+│  + Background Worker     │
+│                          │
+│  gTTS → ffmpeg → play    │
+│                          │
+│  Next chunk generates    │
+│  while current plays     │
+└─────────────────────────┘
+```
