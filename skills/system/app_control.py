@@ -209,7 +209,9 @@ def _parse_open_command(text: str) -> dict:
     if not app:
         return {"success": False, "output": "No app or URL specified", "command": ""}
     if app in SITES:
-        return _open_url(SITES[app])
+        result = _open_url(SITES[app])
+        result["output"] = app
+        return result
     if app in APP_ALIASES:
         return _open_app(APP_ALIASES[app])
     if app in DISPLAY_NAMES:
